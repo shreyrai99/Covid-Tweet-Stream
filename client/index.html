@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
+        <title>Tweet Streamer</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container">
+                    <ul>
+                            <li>
+                                <a href="https://shreybook.herokuapp.com/" class="navbar-brand">DevMedia Corona Tweet Streamer</a>
+                            </li>
+                    </ul>
+                
+            </div>
+        </nav>
+        <div className="container">
+                <div className="row">
+                    <div className="col-md-8 m-auto">
+                            <div class="card-body">
+                                <a class="btn btn-dark btn-large my-4 mb-2" href="https://shreybook.herokuapp.com/">Back to Dashboard</a>
+                            </div>
+                            <div class="display-4 text-center">
+                                    <h1>Built by Shrey Rai</h1>
+                                    <h5>Live twitter feed to get information related to Corona in India. Now get vital information about things like Remdesivir injections, Oxygen cylinders, vaccines at a single place. Please help the needy if you can</h5>
+                            </div>
+
+                    </div>
+                </div>
+        </div>
+    
+        <div className="container">
+                <div className="row">
+                    <div className="col-md-8 m-auto">
+                           <div id="tweetStream"></div>
+                    </div>
+                </div>
+        </div>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+        <script>
+            const tweetStream = document.getElementById('tweetStream');
+            const socket = io()
+
+            const tweets = []
+
+            socket.on('connect',()=>{
+                console.log('Connected to server....')
+            })
+
+            socket.on('tweet',(tweet)=>{
+                console.log(tweet)
+                const tweetData = {
+                    id: tweet.data.id,
+                    text: tweet.data.text,
+                    username: `@${tweet.includes.users[0].username}`,
+
+                }
+                const tweetEl = document.createElement('div')
+                tweetEl.className='card my-4'
+                tweetEl.innerHTML= `
+                    <div class="card-body">
+                        <h5 class="card-title">${tweetData.text}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">${tweetData.username}</h6>                       
+                        <a class="btn btn-primary mt-3" href="https://twitter.com/${tweetData.username}/status/${tweetData.id}">
+                            <i class="fab fa-twitter"></i> Go to Tweet
+                        </a>
+                    </div>
+                `
+                tweetStream.appendChild(tweetEl);
+            })
+        </script>
+    </body>
+</html>
